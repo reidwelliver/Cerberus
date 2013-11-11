@@ -31,11 +31,12 @@ def funct(start, fin, thread_num):
 			if float(price_book) < 1:
 				companies.append([csv_arr[i][0], price_book])
 				mark_cap = cnn_soup.find('td', text = "Market cap").next_sibling.text[1:]
-				if mark_cap[len(mark_cap)-1] == "B":
-					mark_cap_act = (int)(mark_cap[:len(mark_cap)]) * 10^9
-				if mark_cap[len(mark_cap)-1] == "B":
-					mark_cap_act = (int)(mark_cap[:len(mark_cap)]) * 10^6
-				if mark_cap_act > 200 * 10^6:
+				mark_cap_act = ((float)(mark_cap[:-1]))
+				if mark_cap[-1:] == "B":
+					mark_cap_act = (int)(mark_cap_act * 1000000000)
+				if mark_cap[-1:] == "M":
+					mark_cap_act = (int)(mark_cap_act * 1000000)
+				if mark_cap_act > 20000000:
 					print csv_arr[i][0] , "   ", price_book, "   ", mark_cap, "   ", csv_arr[i][1]
 					# f.write(csv_arr[i][0] , "   ", price_book, "   ", mark_cap, "   ", csv_arr[i][1], "\n")
 			if i % 20 == 0:
