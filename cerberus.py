@@ -3,12 +3,14 @@ from bs4 import BeautifulSoup
 from multiprocessing import Process, Lock
 import urllib2
 import csv
+import pickle
 
 
 f = open('data.txt', 'w')
 
 csv_arr = []
 companies = []
+total_checked = 0
 
 def ticker():
 	path = "companylist.csv"
@@ -20,9 +22,11 @@ def ticker():
 
 def funct(start, fin, thread_num):
 	print start, " - ", fin, ": ", thread_num, " Thread Started"
+	global total_checked
 	for i in range (start, fin):
 		# print i
 		# print "thread: ", thread_num, " :   ", i, " - ", fin
+		total_checked += 1
 		try:
 			cnn = 'http://money.cnn.com/quote/quote.html?symb=' + csv_arr[i][0]
 			cnn_soup = BeautifulSoup(urllib2.urlopen(cnn))
@@ -36,8 +40,8 @@ def funct(start, fin, thread_num):
 					mark_cap_act = (int)(mark_cap_act * 1000000000)
 				if mark_cap[-1:] == "M":
 					mark_cap_act = (int)(mark_cap_act * 1000000)
-				if mark_cap_act > 20000000:
-					print csv_arr[i][0] , "   ", price_book, "   ", mark_cap, "   ", csv_arr[i][1]
+				if mark_cap_act > 200*1000000:
+					print csv_arr[i][0] , "   ", price_book, "   ", mark_cap, "   ", csv_arr[i][1], " Progress: ", total_checked, " of 3250 checked."
 					# f.write(csv_arr[i][0] , "   ", price_book, "   ", mark_cap, "   ", csv_arr[i][1], "\n")
 			if i % 20 == 0:
 				pass
